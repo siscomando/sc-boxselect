@@ -1,7 +1,7 @@
 sc-sse
 ============
 
-sc-boxselect is custom input select element.
+A mix between HTML select and dialog. It's used to provide an independent dropdown menu in app.
 
 Usage
 =====
