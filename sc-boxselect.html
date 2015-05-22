@@ -1,0 +1,100 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../paper-dropdown/paper-dropdown.html">
+<link rel="import" href="../core-menu/core-menu.html">
+<link rel="import" href="../paper-item/paper-item.html">
+<link rel="import" href="../core-a11y-keys/core-a11y-keys.html">
+
+
+<!--
+sc-boxselect is custom input select element
+
+##### Example
+
+    <sc-boxselect is custom input select element></sc-boxselect>
+
+@element sc-boxselect is custom input select element
+@blurb Element provinding an input select easiest
+@status beta
+@homepage http://github.com/siscomando/sc-boxselect
+-->
+<polymer-element name="sc-boxselect" attributes="author showThumbs opened">
+  <template>
+    <link rel="stylesheet" href="sc-boxselect.css">
+    <core-a11y-keys target="{{}}" keys="up" on-keys-pressed="{{decrement}}"></core-a11y-keys>
+    <core-a11y-keys target="{{}}" keys="down" on-keys-pressed="{{increment}}"></core-a11y-keys>
+      <paper-dropdown id="dropdop" class="dropdown">
+      <core-a11y-keys target="{{}}" keys="enter" on-keys-pressed="{{selection}}"></core-a11y-keys>
+        <core-menu id="coreMenu" class="menu">
+          <template repeat="{{item in iterable}}">
+            <paper-item>
+              <div class="expo thumb">
+                <template bind if="{{showThumbs}}"><img src="{{item.thumbnail}}"></template>
+              </div>
+              <div class="expo content">{{item.content}}</div>
+            </paper-item>
+          </template>
+        </core-menu>
+      </paper-dropdown>
+  
+  </template>
+  <script>
+    Polymer('sc-boxselect', { 
+       /**
+       * Fired when a reply is returned by Server Side Event.
+       *
+       *
+       * @event sc-selected
+       */        
+      /**
+       * The `author` attribute sets an initial author
+       *
+       * @attribute author
+       * @type String
+       * @default 'Horacio Ibrahim'
+       */ 
+      author: 'Horacio Ibrahim',                  
+      publish: {
+        stream: '',
+        channel: 'message',
+        alias: 'default',
+        showThumbs: true,
+        iterable: [],
+        opened: false,
+      },
+      ready: function() {
+        this.coreMenu = this.$.coreMenu;
+        this.addEventListener('core-activate', function(){
+          this.selection();
+        });
+        this.addEventListener('blur', function(){
+          this.opened = false;
+        });
+      },
+      increment: function() {
+        this.coreMenu.selectNext();
+      },
+      decrement: function() {
+        this.coreMenu.selectPrevious();
+      },    
+      openedChanged: function() {
+        this.$.dropdop.opened = this.opened;
+      },  
+      selection: function() {
+        var model = this.$.coreMenu.selectedModel;
+        this.opened = false;
+        this.fire('selected-user', {response: {'content': model.item.content, 
+                                        'thumbnail': model.item.thumbnail}});
+        console.log("fired: " + this.opened);
+      },
+      /*
+      * thumbnail is src of tag img 
+      */
+      setItems: function(thumbnail, content) {
+        var data = {'thumbnail': thumbnail, 'content': content};
+        this.iterable.push(data); // TODO add/push testesj
+      }
+    });
+  </script>
+
+</polymer-element>

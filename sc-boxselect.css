@@ -1,0 +1,23 @@
+ :host {
+  width: 100%;
+  display: block;
+  font-family: 'RobotoDraft', sans-serif;
+ }
+ paper-dropdown {
+  width: 100%;
+ }
+core-menu {
+ margin: 0;
+}
+ expo {
+ 	float: left;
+ }
+
+ .thumb {
+ 	width: 40px;
+ 	height: 40px;
+ 	background: red;
+ }
+ .content {
+ 	padding-left: 10px;
+ }

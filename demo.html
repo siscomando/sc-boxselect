@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>sc-item Demo</title>
+
+  <script src="../webcomponentsjs/webcomponents.min.js"></script>
+  <link rel="import" href="sc-boxselect.html">
+
+</head>
+<body unresolved>
+		    <button onclick="show();">Show</button>
+        <sc-boxselect showThumbs="true"></sc-boxselect>
+
+        <script>
+
+          function show() {
+              var boxSel = document.querySelector('sc-boxselect');
+              boxSel.opened = true;
+          };
+
+        	document.addEventListener('polymer-ready', function() {
+
+        		var box = document.querySelector('sc-boxselect');
+        		box.setItems("horacio.jpg", "horacioibrahim");
+        		box.setItems("renata.jpg", "renatamachado");
+        		box.setItems("sarney.jpg", "josesarney");
+
+            document.addEventListener('selected-user', function(e) {
+              console.log("Detalhes: " + e.detail.response.content);
+            });
+
+        	});
+        </script>
+
+</body>
+</html>

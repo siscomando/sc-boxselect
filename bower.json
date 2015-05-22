@@ -1,0 +1,27 @@
+{
+  "name": "sc-boxselect",
+  "version": "0.0.1",
+  "authors": [
+    "Horacio Ibrahim <horacioibrahim@gmail.com>"
+  ],
+  "description": "sc-boxselect is custom input select element",
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer",
+    "sc-boxselect"
+  ],
+  "main": "sc-boxselect.html",
+  "license": "MIT",
+  "homepage": "https://github.com/siscomando/sc-boxselect/",
+  "ignore": [
+    "/.*",
+    "/tests/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^0.5.4"
+  },
+  "devDependencies": {
+    "web-component-tester": "*"
+  }
+}
