@@ -6,28 +6,58 @@
 
   <script src="../webcomponentsjs/webcomponents.min.js"></script>
   <link rel="import" href="sc-boxselect.html">
-
+  <style>
+    html /deep/ paper-dialog::shadow #dropdop {
+      margin:0;
+    }
+  </style>
 </head>
 <body unresolved>
-		    <button onclick="show();">Show</button>
+		    <button onclick="showNO();">No target (needs reload)</button>
+        <button onclick="showYES();">with target (needs reload)</button>
+        <button onclick="showNOThumbs();">no thumbs</button>
+        
         <sc-boxselect showThumbs="true"></sc-boxselect>
+
+        <div style="height: 145px;"><p>Lorem ipsun</p></div>
+        <div style="height: 115px;"><p>Ipsun loren</p></div>
+        <div style="height: 65px;"><p>Single sample</p></div>
+        <div id="pow" style="height: 45px; background-color: orangered; width: 100%"><p>I'm target!</p></div>
 
         <script>
 
-          function show() {
+          function showNO() {
               var boxSel = document.querySelector('sc-boxselect');
+              boxSel.showThumbs = true;
               boxSel.opened = true;
           };
+          function showYES() {
+              var boxSel = document.querySelector('sc-boxselect');
+              boxSel.target = "pow";
+              boxSel.showThumbs = true;
+              boxSel.opened = true;
+          };                   
+
+          function showNOThumbs() {
+              var boxSel = document.querySelector('sc-boxselect');
+              boxSel.target = "pow";
+              boxSel.showThumbs = false;
+              boxSel.opened = true;
+          }; 
 
         	document.addEventListener('polymer-ready', function() {
 
         		var box = document.querySelector('sc-boxselect');
-        		box.setItems("horacio.jpg", "horacioibrahim");
-        		box.setItems("renata.jpg", "renatamachado");
-        		box.setItems("sarney.jpg", "josesarney");
+        		box.setItems("http://api.randomuser.me/portraits/thumb/men/55.jpg", "@horacioibrahim");
+        		box.setItems("http://api.randomuser.me/portraits/thumb/men/56.jpg", "@renatamachado");
+        		box.setItems("http://api.randomuser.me/portraits/thumb/men/57.jpg", "@josesarney");
+            box.setItems("http://api.randomuser.me/portraits/thumb/men/58.jpg", "@mariolago");
+            box.setItems("http://api.randomuser.me/portraits/thumb/men/59.jpg", "@oscarneymar");
+            box.setItems("http://api.randomuser.me/portraits/thumb/men/60.jpg", "@anamariabraga");
 
             document.addEventListener('selected-user', function(e) {
-              console.log("Detalhes: " + e.detail.response.content);
+              var target = document.querySelector('#pow');
+              target.textContent = e.detail.response.content;
             });
 
         	});
