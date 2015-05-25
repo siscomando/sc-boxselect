@@ -87,7 +87,7 @@ sc-boxselect is custom input select element
         opened: false,
         target: null,
         limit: 5, // each item has 60.7813px
-        maxHeight: 60.7813 * this.limit + "px", // 4 x 60.7813 = 243
+        maxHeight: 60.7813 * this.limit, // 4 x 60.7813 = 243
       },
       ready: function() {
         this.coreMenu = this.$.coreMenu;
@@ -101,17 +101,27 @@ sc-boxselect is custom input select element
           mythis.selection();
         });
 
-      },  
+      }, 
+      iterableChanged: function() {
+        this.renewMaxHeight();
+        this.setPosition(this.target, this.$.dropdop);
+      },
+      limitChanged: function() {
+        this.renewMaxHeight();
+      },
+      renewMaxHeight: function() {
+        this.maxHeight = 60.7813 * this.iterable.length;
+      },
       openedChanged: function() {
         if (this.opened == true) {
           this.$.dropdop.style.display = "block";  
+          this.setPosition(this.target, this.$.dropdop);
           pi = this.$.dropdop.querySelector('paper-item ');
           pi.focus();
         } else {
           this.$.dropdop.style.display = "none";
         }
         
-        this.setPosition(this.target, this.$.dropdop);
       },
       close: function() {
         this.opened = false;
@@ -149,17 +159,12 @@ sc-boxselect is custom input select element
         if (typeof targetElem == "string") {
           targetElem = document.querySelector('#' + targetElem);
         }
-        
-        overlay.style.position = "fixed";
-        var rect = targetElem.getBoundingClientRect();
-        h = targetElem.offsetHeight;
-        t = rect.bottom // - overlay.offsetHeight;
-        l = rect.left;
-        w = rect.width;
-
-        overlay.style.top = (t - overlay.offsetHeight - h) + "px";
-        overlay.style.left = l + "px";
-        overlay.style.width = w + "px";
+                
+        topTarget = targetElem.offsetTop;
+        console.log("topTarget: " + topTarget + " this.maxHeight " + this.maxHeight );
+        overlay.style.top = (topTarget - this.maxHeight) +  "px";
+        overlay.style.left = targetElem.offsetLeft + "px";
+        overlay.style.width = targetElem.offsetWidth + "px";
       },
     });
   </script>
