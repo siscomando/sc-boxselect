@@ -2,12 +2,30 @@
 width: 100%;
 display: block;
 }
-paper-dialog {
-  position: relative !important;
-}
 core-menu {
  margin: 0;
 }
- expo {
- 	float: left;
- }
+.expo {
+	float: left;
+}
+.thumb  {
+	width: 32px; 
+	height: 32px; 
+}
+.content {
+	margin-left: 8px; 
+	padding-top: 2px; 
+	font-size: 0.98em;
+}
+#dropdop {
+	font-family: 'RobotoDraft', sans-serif; 
+	display: none; 
+	z-index:1000; 
+	float: left; 
+	position: absolute; 
+	background: white;
+    box-shadow: 0 13px 25px 0 rgba(0, 0, 0, 0.3);"
+}
+#dropdop paper-item {
+	min-height: 60.7813px;
+}

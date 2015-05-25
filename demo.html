@@ -6,23 +6,24 @@
 
   <script src="../webcomponentsjs/webcomponents.min.js"></script>
   <link rel="import" href="sc-boxselect.html">
-  <style>
-    html /deep/ paper-dialog::shadow #dropdop {
-      margin:0;
-    }
-  </style>
+  
 </head>
 <body unresolved>
-		    <button onclick="showNO();">No target (needs reload)</button>
-        <button onclick="showYES();">with target (needs reload)</button>
-        <button onclick="showNOThumbs();">no thumbs</button>
+        <button onclick="showYES();">#orangered with target (needs reload)</button>
+        <button onclick="showNOThumbs();">#orangered no thumbs</button>
+        <br><br>
+        <button onclick="showYESCian();">#cyan with target (needs reload)</button>
+        <button onclick="showNOThumbsCian();">#cyan no thumbs</button>        
         
-        <sc-boxselect showThumbs="true"></sc-boxselect>
+        <sc-boxselect showThumbs="true" target="poin"></sc-boxselect>
 
         <div style="height: 145px;"><p>Lorem ipsun</p></div>
         <div style="height: 115px;"><p>Ipsun loren</p></div>
         <div style="height: 65px;"><p>Single sample</p></div>
-        <div id="pow" style="height: 45px; background-color: orangered; width: 100%"><p>I'm target!</p></div>
+        <div>
+          <div id="poin" style="height: 65px; width: 200px; float: left; background: cyan;"><p>Single two</p></div>
+          <div id="pow" style="position:absolute; display: inline-block; height: 65px; background-color: orangered; width: 400px"><p>I'm target!</p></div>
+        </div>
 
         <script>
 
@@ -45,15 +46,38 @@
               boxSel.opened = true;
           }; 
 
+          function showNOCian() {
+              var boxSel = document.querySelector('sc-boxselect');
+              boxSel.showThumbs = true;
+              boxSel.opened = true;
+          };
+          function showYESCian() {
+              var boxSel = document.querySelector('sc-boxselect');
+              boxSel.target = "poin";
+              boxSel.showThumbs = true;
+              boxSel.opened = true;
+          };                   
+          function showNOThumbsCian() {
+              var boxSel = document.querySelector('sc-boxselect');
+              boxSel.target = "poin";
+              boxSel.showThumbs = false;
+              boxSel.opened = true;
+          };           
+
         	document.addEventListener('polymer-ready', function() {
 
         		var box = document.querySelector('sc-boxselect');
         		box.setItems("http://api.randomuser.me/portraits/thumb/men/55.jpg", "@horacioibrahim");
         		box.setItems("http://api.randomuser.me/portraits/thumb/men/56.jpg", "@renatamachado");
         		box.setItems("http://api.randomuser.me/portraits/thumb/men/57.jpg", "@josesarney");
-            box.setItems("http://api.randomuser.me/portraits/thumb/men/58.jpg", "@mariolago");
-            box.setItems("http://api.randomuser.me/portraits/thumb/men/59.jpg", "@oscarneymar");
-            box.setItems("http://api.randomuser.me/portraits/thumb/men/60.jpg", "@anamariabraga");
+            box.setItems("http://api.randomuser.me/portraits/thumb/men/57.jpg", "@josesarney");
+            box.setItems("http://api.randomuser.me/portraits/thumb/men/56.jpg", "@renatamachado");
+            box.setItems("http://api.randomuser.me/portraits/thumb/men/57.jpg", "@josesarney");
+            box.setItems("http://api.randomuser.me/portraits/thumb/men/57.jpg", "@josesarney");            
+            document.addEventListener('selected-user', function(e) {
+              var target = document.querySelector('#poin');
+              target.textContent = e.detail.response.content;
+            });
 
             document.addEventListener('selected-user', function(e) {
               var target = document.querySelector('#pow');

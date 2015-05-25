@@ -1,5 +1,4 @@
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../paper-dialog/paper-dialog.html">
 <link rel="import" href="../core-menu/core-menu.html">
 <link rel="import" href="../paper-item/paper-item.html">
 <link rel="import" href="../core-a11y-keys/core-a11y-keys.html">
@@ -22,21 +21,20 @@ sc-boxselect is custom input select element
     <link rel="stylesheet" href="sc-boxselect.css">     
     <core-a11y-keys target="{{coreMenu}}" keys="enter" on-keys-pressed="{{selection}}"></core-a11y-keys>
 
-      <paper-dialog id="dropdop" class="boxselect" style="font-family: 'RobotoDraft', sans-serif;">
-        <core-menu id="coreMenu" class="menu"> 
+      <div id="dropdop" class="boxselect">
+        <core-menu id="coreMenu" class="menu" > 
           <template repeat="{{item in iterable}}">
-            <paper-item autoFocus="true">
+            <paper-item tabIndex="-1" on-blur="{{close}}">
               <template bind if="{{showThumbs}}">
-                <div class="expo thumb" style="width: 32px; height: 32px;
-                background: url({{item.thumbnail}}); background-size: cover; 
-                background-repeat: no-repeat;">
+                <div class="expo thumb" style="background: url({{item.thumbnail}}); 
+                background-size: cover; background-repeat: no-repeat;">
                 </div>
               </template>
-              <div class="expo content" style="margin-left: 8px; font-size: 0.98em;">{{item.content}}</div>
+              <div class="expo content">{{item.content}}</div>
             </paper-item>
           </template>
         </core-menu>
-      </paper-dialog>
+      </div>
   
   </template>
   <script>
@@ -91,43 +89,33 @@ sc-boxselect is custom input select element
         limit: 5, // each item has 60.7813px
         maxHeight: 60.7813 * this.limit + "px", // 4 x 60.7813 = 243
       },
-      created: function() {
-
-      },
       ready: function() {
         this.coreMenu = this.$.coreMenu;
         this.$.dropdop.style.margin = 0;
-        this.$.dropdop.$.scroller.style.padding = 0;
-        this.$.dropdop.$.scroller.style.maxWidth = "100%";
-        this.$.dropdop.$.scroller.style.maxHeight = this.maxHeight;
         this.$.coreMenu.style.margin = 0;  
+        this.targetElem = document.querySelector('#' + this.target);
         
+        // ACAO QUANDO SELECIONADO ATIVO
         document.addEventListener('core-activate', function(){
           var mythis = this.querySelector('sc-boxselect');
           mythis.selection();
         });
 
-        document.addEventListener('core-overlay-close-completed', function(){
-          var mythis = this.querySelector('sc-boxselect');
-          mythis.opened = false;
-        }); 
-
-        document.addEventListener('core-overlay-open-completed', function() {
-          var overlay = this.querySelector('core-overlay-layer.core-opened');
-          var mythis = this.querySelector('sc-boxselect');
-          overlay.style.maxHeight = mythis.maxHeight;
-          if (mythis.target != null) {
-            var target = document.querySelector('#' + mythis.target);
-            var overlay = this.querySelector('core-overlay-layer.core-opened');
-            mythis.setPosition(target, overlay);
-          }  
-
-        });
-
       },  
       openedChanged: function() {
-        this.$.dropdop.opened = this.opened;
-      }, 
+        if (this.opened == true) {
+          this.$.dropdop.style.display = "block";  
+          pi = this.$.dropdop.querySelector('paper-item ');
+          pi.focus();
+        } else {
+          this.$.dropdop.style.display = "none";
+        }
+        
+        this.setPosition(this.target, this.$.dropdop);
+      },
+      close: function() {
+        this.opened = false;
+      },
       selection: function() {
         var model = this.$.coreMenu.selectedModel;
         this.opened = false;
@@ -147,15 +135,32 @@ sc-boxselect is custom input select element
           this.iterable.push(data); // TODO add/push testesj
         }
       },
+      /**
+       * Clear all elements in box dialog.
+       *
+       * @method clearItems
+       */       
+      clearItems: function() {
+        this.iterable = [];
+      },      
       setPosition: function(targetElem, overlay) {
+        var targetElem = targetElem;
+
+        if (typeof targetElem == "string") {
+          targetElem = document.querySelector('#' + targetElem);
+        }
+        
+        overlay.style.position = "fixed";
+        var rect = targetElem.getBoundingClientRect();
         h = targetElem.offsetHeight;
-        t = targetElem.offsetTop - overlay.offsetHeight;
-        l = targetElem.offsetLeft;
-        w = targetElem.offsetWidth;
-        overlay.style.top = t + "px";
-        overlay.style.left = l + "px";;
-        overlay.style.width = w + "px";;
-      }
+        t = rect.bottom // - overlay.offsetHeight;
+        l = rect.left;
+        w = rect.width;
+
+        overlay.style.top = (t - overlay.offsetHeight - h) + "px";
+        overlay.style.left = l + "px";
+        overlay.style.width = w + "px";
+      },
     });
   </script>
 

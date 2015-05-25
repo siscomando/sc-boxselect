@@ -12,26 +12,39 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-  <title>sc-sse element</title>
+  <title>sc-boxselect element</title>
 
   <script src="../../webcomponentsjs/webcomponents.min.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
 
   <!-- Step 1: import the element to test -->
-  <link rel="import" href="../sc-sse.html">
+  <link rel="import" href="../sc-boxselect.html">
 </head>
 <body>
 
   <!-- You use the document as a place to set up your fixtures. -->
-  <sc-sse></sc-sse>
+  <sc-boxselect showThumbs="true" target="poin"></sc-boxselect>
+  <div id="poin" style="position: absolute; left: 200px; background-color: cyan;">
 
   <script>
-    var myEl = document.querySelector('sc-sse');
+    var div = document.createElement('div');
+    div.id = "poin";
+    div.style.position = "absolute";
+    div.style.left = "200px";
+    div.style.backgroundColor = "cyan";
 
-    suite('<seed-element>', function() {
+    var box = document.createElement('sc-boxselect');
+    box.showThumbs = true;
+    box.target = "poin"
 
-      test('defines the "author" property', function() {
-        assert.equal(myEl.author, 'Horacio Ibrahim');
+    suite('<sc-boxselect>', function() {
+
+      test('test added two items', function() {
+        box.setItems("http://api.randomuser.me/portraits/thumb/men/55.jpg", "@horacioibrahim");
+        box.setItems("http://api.randomuser.me/portraits/thumb/men/56.jpg", "@renatamachado");
+        box.setItems("http://api.randomuser.me/portraits/thumb/men/57.jpg", "@josesarney") 
+        items = box.$.coreMenu.items
+        assert.equal(3, items);
       });
 
     });
