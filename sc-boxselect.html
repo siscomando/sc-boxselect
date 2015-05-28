@@ -22,9 +22,9 @@ sc-boxselect is custom input select element
     <core-a11y-keys target="{{coreMenu}}" keys="enter" on-keys-pressed="{{selection}}"></core-a11y-keys>
 
       <div id="dropdop" class="boxselect">
-        <core-menu id="coreMenu" class="menu" > 
+        <core-menu id="coreMenu" class="menu"> 
           <template repeat="{{item in iterable}}">
-            <paper-item tabIndex="-1" on-blur="{{close}}">
+            <paper-item on-blur="{{close}}">
               <template bind if="{{showThumbs}}">
                 <div class="expo thumb" style="background: url({{item.thumbnail}}); 
                 background-size: cover; background-repeat: no-repeat;">
@@ -96,9 +96,9 @@ sc-boxselect is custom input select element
         this.targetElem = document.querySelector('#' + this.target);
         
         // ACAO QUANDO SELECIONADO ATIVO
-        document.addEventListener('core-activate', function(){
-          var mythis = this.querySelector('sc-boxselect');
-          mythis.selection();
+        this.addEventListener('core-activate', function(){
+          // var mythis = this.querySelector('sc-boxselect');
+          this.selection();
         });
 
       }, 
@@ -116,21 +116,56 @@ sc-boxselect is custom input select element
         if (this.opened == true) {
           this.$.dropdop.style.display = "block";  
           this.setPosition(this.target, this.$.dropdop);
-          pi = this.$.dropdop.querySelector('paper-item ');
-          pi.focus();
         } else {
           this.$.dropdop.style.display = "none";
         }
         
       },
+      /**
+      * Close box dialog. Useful also to simulate blur event.
+      *
+      * @method close
+      */
       close: function() {
         this.opened = false;
       },
+      /**
+      * Selects previous item.
+      *
+      * @method selectPrevious
+      */
+      selectPrevious: function() {
+        this.$.coreMenu.selectPrevious();
+      },  
+      /**
+      * Selects next item.
+      *
+      * @method selectNext
+      */
+      selectNext: function() {
+        this.$.coreMenu.selectNext();
+      },         
       selection: function() {
         var model = this.$.coreMenu.selectedModel;
         this.opened = false;
-        this.fire('selected-user', {response: {'content': model.item.content, 
+        try {
+            this.fire('selected-user', {response: {'content': model.item.content, 
                                         'thumbnail': model.item.thumbnail}});
+        } catch (err) {
+          console.log("Warning: " + err + "(User not selected.)"); // TODO error-handling
+        }
+      },
+      /**
+       * Adds one-time elements in box dialog but limited at limit attribute.
+       *
+       * @param thumbnail - sets the thumbnail 
+       * @param content - sets the content 
+       * @method setItem
+       */ 
+      setItem: function(thumbnail, content) {
+        var data = {'thumbnail': thumbnail, 'content': content};
+        this.iterable.unshift(data); // TODO add/push testesj
+        this.iterable = this.iterable.slice(0, this.limit);
       },
       /**
        * Adds elements in box dialog but limited at limit attribute.
@@ -139,12 +174,10 @@ sc-boxselect is custom input select element
        * @param content - sets the content 
        * @method setItems
        */ 
-      setItems: function(thumbnail, content) {
-        var data = {'thumbnail': thumbnail, 'content': content};
-        if (this.iterable.length < this.limit) {
-          this.iterable.push(data); // TODO add/push testesj
-        }
-      },
+      setItems: function(arrayOfHash) {
+        this.iterable = arrayOfHash;
+        this.iterable = this.iterable.slice(0, this.limit);
+      },      
       /**
        * Clear all elements in box dialog.
        *
@@ -161,7 +194,6 @@ sc-boxselect is custom input select element
         }
                 
         topTarget = targetElem.offsetTop;
-        console.log("topTarget: " + topTarget + " this.maxHeight " + this.maxHeight );
         overlay.style.top = (topTarget - this.maxHeight) +  "px";
         overlay.style.left = targetElem.offsetLeft + "px";
         overlay.style.width = targetElem.offsetWidth + "px";
